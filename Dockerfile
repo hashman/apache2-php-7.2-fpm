@@ -1,9 +1,10 @@
 FROM php:7.2-fpm
 
 RUN apt update \
-    && apt -y install apache2 \
+    && apt install -y apache2 \
+    && docker-php-ext-install pdo pdo_mysql \
     && mkdir -p /code \
-    && a2enmod proxy_fcgi
+    && a2enmod proxy_fcgi rewrite
 
 COPY 000-default.conf /etc/apache2/sites-available/
 
@@ -12,5 +13,7 @@ EXPOSE 443
 
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
+
+WORKDIR /code
 
 ENTRYPOINT ["/entrypoint.sh"]
